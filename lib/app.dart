@@ -8,7 +8,7 @@ import 'package:bilingual_quiz_app/logic/providers/language_provider.dart';
 import 'package:bilingual_quiz_app/logic/repositories/settings_repository.dart';
 import 'package:bilingual_quiz_app/ui/screens/home_screen.dart';
 import 'package:bilingual_quiz_app/ui/theme/app_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 /// Widget App: bọc [LanguageProvider] để toàn app dùng chung ngôn ngữ.

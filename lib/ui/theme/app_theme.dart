@@ -1,7 +1,7 @@
 /// Theme dùng chung toàn app (Material 3, seedColor xanh Phenikaa).
 library;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Gom cấu hình ThemeData một chỗ để mọi màn hình nhất quán.
 abstract class AppTheme {

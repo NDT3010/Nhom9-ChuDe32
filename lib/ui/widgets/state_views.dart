@@ -1,7 +1,7 @@
 /// 3 widget trạng thái dùng chung: Loading / Error / Empty.
 library;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Màn hình chờ khi đang tải JSON — dùng ở mọi Screen.
 class LoadingView extends StatelessWidget {

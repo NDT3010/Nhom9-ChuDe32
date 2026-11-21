@@ -1,7 +1,7 @@
 /// Một dòng đáp án A/B/C/D (UI dùng ở TV2).
 library;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Tile đáp án, chiều cao tối thiểu 48dp để dễ bấm trên điện thoại.
 class OptionTile extends StatelessWidget {

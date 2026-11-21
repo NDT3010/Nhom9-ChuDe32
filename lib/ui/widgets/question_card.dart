@@ -3,7 +3,7 @@ library;
 
 import 'package:bilingual_quiz_app/data/models/question.dart';
 import 'package:bilingual_quiz_app/ui/widgets/option_tile.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Card câu hỏi: tiêu đề, code minh họa, 4 đáp án. TV1 chỉ dựng khung.
 class QuestionCard extends StatelessWidget {
