@@ -8,27 +8,16 @@ import 'package:bilingual_quiz_app/ui/screens/settings_screen.dart';
 import 'package:bilingual_quiz_app/ui/screens/stats_screen.dart';
 import 'package:bilingual_quiz_app/ui/screens/wrong_retry_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-/// Lưu ngôn ngữ hiện tại, dùng Provider để Settings đổi là Home đổi theo.
-class LangController extends ChangeNotifier {
-  LangController([this.lang = AppLang.vi]);
-  AppLang lang;
-  AppStrings get s => AppStrings.of(lang);
-
-  void setLang(AppLang value) {
-    lang = value;
-    notifyListeners();
-  }
-}
 
 /// Trang chủ chạy được thật ở TV1: bấm các nút sẽ sang màn hình tương ứng.
+///
+/// Mọi chuỗi hiển thị đều đọc từ [AppStringsScope] — không hardcode chuỗi.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final s = context.watch<LangController>().s;
+    final s = AppStringsScope.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(s.appTitle)),
       body: ListView(
@@ -64,7 +53,7 @@ class HomeScreen extends StatelessWidget {
           ),
           _MenuButton(
             icon: Icons.replay,
-            label: s.retryWrong,
+            label: s.wrongRetry,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const WrongRetryScreen()),
             ),
