@@ -14,6 +14,7 @@ class Question {
     required this.viQuestion,
     required this.enQuestion,
     required this.options,
+    this.optionsEn = const {},
     required this.answer,
     this.code,
     this.tier = '',
@@ -41,8 +42,11 @@ class Question {
   final String viQuestion;
   final String enQuestion;
 
-  /// 4 đáp án keyed A/B/C/D.
+  /// 4 đáp án keyed A/B/C/D (tiếng Việt).
   final Map<String, String> options;
+
+  /// 4 đáp án bản tiếng Anh (nếu có trong JSON).
+  final Map<String, String> optionsEn;
 
   /// Đáp án đúng ('A'..'D').
   final String answer;
@@ -65,12 +69,26 @@ class Question {
   /// Giải thích hiển thị theo ngôn ngữ.
   String explanation(String lang) => lang == 'en' ? explanationEn : explanationVi;
 
+  /// Nội dung đáp án theo ngôn ngữ ('vi' hoặc 'en').
+  String optionText(String key, String lang) =>
+      lang == 'en' ? (optionsEn[key] ?? options[key] ?? '') : (options[key] ?? '');
+
   factory Question.fromJson(Map<String, dynamic> json) {
     final rawOptions = json['options'];
     final Map<String, String> opts = {};
+    final Map<String, String> optsEn = {};
     if (rawOptions is Map) {
       for (final e in rawOptions.entries) {
-        opts[e.key.toString()] = e.value?.toString() ?? '';
+        final k = e.key.toString();
+        final v = e.value;
+        if (v is Map) {
+          opts[k] = v['vi']?.toString() ?? v['en']?.toString() ?? '';
+          optsEn[k] = v['en']?.toString() ?? v['vi']?.toString() ?? '';
+        } else {
+          final s = v?.toString() ?? '';
+          opts[k] = s;
+          optsEn[k] = s;
+        }
       }
     }
     int asInt(dynamic v, [int fb = 0]) {
@@ -89,6 +107,7 @@ class Question {
       viQuestion: json['vi_question']?.toString() ?? '',
       enQuestion: json['en_question']?.toString() ?? '',
       options: opts,
+      optionsEn: optsEn,
       answer: (json['answer']?.toString() ?? '').toUpperCase(),
       code: json['code']?.toString(),
       tier: json['tier']?.toString() ?? '',

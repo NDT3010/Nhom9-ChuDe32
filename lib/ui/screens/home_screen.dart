@@ -3,7 +3,7 @@ library;
 
 import 'package:bilingual_quiz_app/l10n/app_strings.dart';
 import 'package:bilingual_quiz_app/ui/screens/exam_screen.dart';
-import 'package:bilingual_quiz_app/ui/screens/practice_screen.dart';
+import 'package:bilingual_quiz_app/ui/screens/practice_setup_screen.dart';
 import 'package:bilingual_quiz_app/ui/screens/settings_screen.dart';
 import 'package:bilingual_quiz_app/ui/screens/stats_screen.dart';
 import 'package:bilingual_quiz_app/ui/screens/wrong_retry_screen.dart';
@@ -190,7 +190,7 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.sports_esports,
                 label: s.practice,
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const PracticeScreen()),
+                  MaterialPageRoute(builder: (_) => const PracticeSetupScreen()),
                 ),
               ),
               // Nút 2: Thi thử (>= 48dp)

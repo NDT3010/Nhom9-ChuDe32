@@ -8,6 +8,7 @@ import 'package:bilingual_quiz_app/data/models/question.dart';
 import 'package:bilingual_quiz_app/data/models/quiz_result.dart';
 import 'package:bilingual_quiz_app/logic/repositories/history_repository.dart';
 import 'package:bilingual_quiz_app/logic/repositories/question_repository.dart';
+import 'package:bilingual_quiz_app/logic/repositories/wrong_repository.dart';
 import 'package:bilingual_quiz_app/logic/services/quiz_service.dart';
 import 'package:flutter/foundation.dart';
 
@@ -17,6 +18,7 @@ class PracticeProvider extends ChangeNotifier {
     required this.questionRepository,
     QuizService? quizService,
     this.historyRepository,
+    this.wrongRepository,
   }) : _quizService = quizService ?? QuizService(questionRepository);
 
   /// Nguồn câu hỏi.
@@ -27,6 +29,9 @@ class PracticeProvider extends ChangeNotifier {
 
   /// Nơi lưu lịch sử nộp bài (tùy chọn).
   final HistoryRepository? historyRepository;
+
+  /// Nơi lưu/xóa câu hỏi sai vào bộ nhớ máy.
+  final WrongRepository? wrongRepository;
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -128,6 +133,21 @@ class PracticeProvider extends ChangeNotifier {
     if (_isSubmitted) return;
     _userAnswers[questionNumber] = choice;
     notifyListeners();
+
+    // Tự động lưu mã câu sai / xóa câu đúng vào WrongRepository
+    if (wrongRepository != null) {
+      final q = _questions.cast<Question?>().firstWhere(
+            (item) => item?.number == questionNumber,
+            orElse: () => null,
+          );
+      if (q != null) {
+        if (!q.isCorrect(choice)) {
+          wrongRepository!.addWrongQuestion(q.number, codeId: q.codeId);
+        } else {
+          wrongRepository!.removeWrongQuestion(q.number, codeId: q.codeId);
+        }
+      }
+    }
   }
 
   /// Chuyển câu hỏi tiếp theo.

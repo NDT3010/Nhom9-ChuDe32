@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class LocalStoreKeys {
   static const String history = 'quiz_history_v1';
   static const String lang = 'app_lang_v1';
+  static const String wrongQuestions = 'wrong_questions_v1';
 }
 
 /// Lớp bọc SharedPreferences để tầng Repository không phụ thuộc trực tiếp plugin.
@@ -61,6 +62,29 @@ class LocalStore {
       return Result.ok(null);
     } catch (_) {
       return Result.err(const AppError('Không lưu được ngôn ngữ.', code: AppErrorCode.storage));
+    }
+  }
+
+  Future<Result<List<int>>> loadWrongQuestionNumbers() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList(LocalStoreKeys.wrongQuestions);
+      if (list == null || list.isEmpty) return Result.ok(const []);
+      final numbers = list.map((e) => int.tryParse(e) ?? 0).where((n) => n > 0).toList();
+      return Result.ok(numbers);
+    } catch (_) {
+      return Result.err(const AppError('Không đọc được danh sách câu sai.', code: AppErrorCode.storage));
+    }
+  }
+
+  Future<Result<void>> saveWrongQuestionNumbers(List<int> numbers) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final strList = numbers.map((e) => e.toString()).toList();
+      await prefs.setStringList(LocalStoreKeys.wrongQuestions, strList);
+      return Result.ok(null);
+    } catch (_) {
+      return Result.err(const AppError('Không lưu được danh sách câu sai.', code: AppErrorCode.storage));
     }
   }
 }
