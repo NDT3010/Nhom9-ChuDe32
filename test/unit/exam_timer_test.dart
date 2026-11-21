@@ -1,8 +1,6 @@
 /// Unit tests cho ExamTimer: start, tick, pause, resume, hết giờ, dispose.
 library;
 
-import 'dart:async';
-
 import 'package:bilingual_quiz_app/logic/services/exam_timer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
