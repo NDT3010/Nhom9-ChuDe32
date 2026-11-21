@@ -72,6 +72,9 @@ class ExamProvider extends ChangeNotifier {
   /// true nếu bài thi kết thúc do hết thời gian làm bài.
   bool get isTimeUp => _isTimeUp;
 
+  /// true nếu thời gian làm bài còn <= 60 giây (báo sắp hết giờ).
+  bool get isWarning => _remainingSeconds > 0 && _remainingSeconds <= 60;
+
   /// Kết quả sau khi nộp bài thi.
   QuizResult? get result => _result;
 
@@ -106,6 +109,7 @@ class ExamProvider extends ChangeNotifier {
   Future<void> startExam({
     int count = 20,
     int durationSeconds = 15 * 60,
+    int? block,
   }) async {
     _stopTimer();
     _isLoading = true;
@@ -119,7 +123,7 @@ class ExamProvider extends ChangeNotifier {
     _remainingSeconds = durationSeconds;
     notifyListeners();
 
-    final res = await _quizService.buildQuiz(count: count);
+    final res = await _quizService.buildQuiz(count: count, block: block);
     res.when(
       ok: (items) {
         _questions = items;
@@ -154,6 +158,18 @@ class ExamProvider extends ChangeNotifier {
   void _stopTimer() {
     _timer?.cancel();
     _timer = null;
+  }
+
+  /// Tạm dừng đếm giờ (khi app chuyển vào nền).
+  void pause() {
+    _stopTimer();
+    notifyListeners();
+  }
+
+  /// Tiếp tục đếm giờ (khi app quay lại foreground).
+  void resume() {
+    if (_isSubmitted || _remainingSeconds <= 0 || _timer != null) return;
+    _startTimer();
   }
 
   /// Chọn đáp án cho câu hỏi.
