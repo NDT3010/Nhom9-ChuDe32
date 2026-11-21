@@ -39,4 +39,7 @@ extension ResultWhen<T> on Result<T> {
 
   bool get isOk => this is Ok<T>;
   bool get isErr => this is Err<T>;
+
+  /// Trả về giá trị nếu thành công, null nếu thất bại.
+  T? get valueOrNull => this is Ok<T> ? (this as Ok<T>).value : null;
 }

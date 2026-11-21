@@ -19,7 +19,10 @@ import 'package:provider/provider.dart';
 
 /// Màn hình Thi thử có đếm ngược thời gian.
 class ExamScreen extends StatefulWidget {
-  const ExamScreen({super.key});
+  const ExamScreen({super.key, this.provider});
+
+  /// Provider được inject (dùng cho test hoặc DI).
+  final ExamProvider? provider;
 
   @override
   State<ExamScreen> createState() => _ExamScreenState();
@@ -27,6 +30,7 @@ class ExamScreen extends StatefulWidget {
 
 class _ExamScreenState extends State<ExamScreen> with WidgetsBindingObserver {
   late final ExamProvider _provider;
+  bool _isInternalProvider = false;
   bool _isConfiguring = true;
 
   // ── Cấu hình ca thi ──────────────────────────────────────────────────────
@@ -41,17 +45,24 @@ class _ExamScreenState extends State<ExamScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _provider = ExamProvider(
-      questionRepository:
-          QuestionRepositoryImpl(const QuestionLocalDatasource()),
-      historyRepository: HistoryRepositoryImpl(const LocalStore()),
-    );
+    if (widget.provider != null) {
+      _provider = widget.provider!;
+    } else {
+      _isInternalProvider = true;
+      _provider = ExamProvider(
+        questionRepository:
+            QuestionRepositoryImpl(const QuestionLocalDatasource()),
+        historyRepository: HistoryRepositoryImpl(const LocalStore()),
+      );
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _provider.dispose();
+    if (_isInternalProvider) {
+      _provider.dispose();
+    }
     super.dispose();
   }
 
